@@ -1,14 +1,23 @@
 from fastapi import Depends, FastAPI
-
-import logging
-import api_logging
-
 import auth
 import models
 import routers
 from db.init import init
 from db.db import get_database
 from dependencies import read_current_user
+
+import logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="[%(process)d][%(processName)s][%(name)s]:%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("api.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 app = FastAPI()
 
@@ -23,11 +32,11 @@ async def home():
 
 @app.on_event("startup")
 async def startup():
-    logging.info('Startup Application...')
+    logger.info('Startup Application...')
     await init()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    logging.info('Shutdown Application...')
+    logger.info('Shutdown Application...')
     await get_database().disconnect()

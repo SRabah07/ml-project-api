@@ -1,19 +1,19 @@
 import logging
-import api_logging
 from fastapi import Depends
 from db.db import get_database, metadata, sqlalchemy_engine
 from db.manage_user import init_users
 from databases import Database
+logger = logging.getLogger(__name__)
 
 
 async def init():
-    logging.info('Connect Database...')
+    logger.info('Connect Database...')
     database = get_database()
     await database.connect()
-    logging.info('Database connected...')
-    logging.info('Create DB metadata...')
+    logger.info('Database connected...')
+    logger.info('Create DB metadata...')
     metadata.create_all(sqlalchemy_engine)
-    logging.info('DB metadata created...')
-    logging.info('Init users...')
+    logger.info('DB metadata created...')
+    logger.info('Init users...')
     await init_users(database)
-    logging.info('Users inited...')
+    logger.info('Users inited...')
