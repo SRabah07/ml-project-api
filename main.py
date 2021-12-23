@@ -7,14 +7,7 @@ from db.db import get_database
 from dependencies import read_current_user
 
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(process)d][%(processName)s][%(name)s]:%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("api.log"),
-        logging.StreamHandler()
-    ]
-)
+logging.config.fileConfig('logging.config')
 
 logger = logging.getLogger(__name__)
 

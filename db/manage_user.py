@@ -17,12 +17,12 @@ logger = logging.getLogger(__name__)
 async def init_users(database: Database):
     logger.info('Create default users...')
     count_query = select([func.count()]).select_from(users)
-    logging.info(f"count_query {count_query}")
+    logger.info(f"count_query {count_query}")
     logger.info(f"database {type(database)}")
 
     count_tuple = await database.fetch_one(count_query)
     if count_tuple[0] == 0:
-        logging.info("Users table is empty. 'credentials.json' will be loaded")
+        logger.info("Users table is empty. 'credentials.json' will be loaded")
         with open('resources/credentials.json') as file:
             persons = json.load(file)
 
@@ -39,7 +39,6 @@ async def get_user(username: str) -> User:
     select_query = users.select().where(users.c.username == username)
     logger.info(f'Get user query={select_query}')
     raw_user = await database.fetch_one(select_query)
-    print(f'raw_user={raw_user}')
 
     if raw_user is None:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
