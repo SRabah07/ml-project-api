@@ -3,9 +3,12 @@ from fastapi import Depends, FastAPI
 import auth
 import models
 import routers
-import dependencies
+from dependencies import read_current_user
 
 app = FastAPI()
+
+app.include_router(routers.api.router, prefix="/api", tags=["API"], dependencies=[Depends(read_current_user)])
+app.include_router(routers.register.router, prefix="/register", tags=["Register"])
 
 
 @app.get("/")

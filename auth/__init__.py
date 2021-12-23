@@ -1,1 +1,1 @@
-from auth.auth import verify
+from auth.auth import *
