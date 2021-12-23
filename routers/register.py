@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from password_validator import PasswordValidator
 from starlette.status import HTTP_400_BAD_REQUEST
 from models import UserCreate
+from db.manage_user import create_user
 
 router = APIRouter()
 
@@ -21,6 +22,7 @@ schema \
 @router.post('/')
 async def register(user: UserCreate):
     validate(user)
+    user_id = await create_user(user)
 
 
 def validate(user: UserCreate):
@@ -28,7 +30,7 @@ def validate(user: UserCreate):
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="User is required!")
 
     # Login / Username
-    if len(user.username < MIN_CHARACTERS_USERNAME):
+    if len(user.username) < MIN_CHARACTERS_USERNAME:
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST,
                             detail="Username/Login must be at least {MIN_CHARACTERS_USERNAME} characters")
 

@@ -34,14 +34,6 @@ async def init_users(database: Database):
         logging.info('Users table already exist. Nothing to do!')
 
 
-async def create_user(user: UserCreate, database: Database = Depends(get_database)):
-    hashed_password = encrypt_password(user.password)
-    user_db = {"username": user.username, "password": hashed_password, "admin": user.admin}
-    insert_query = users.insert().values(user_db)
-    user_id = await database.execute(insert_query)
-    logging.debug(f'New user created -> id={user_id}')
-
-
 async def get_user(username: str) -> User:
     database = get_database()
     select_query = users.select().where(users.c.username == username)
@@ -53,3 +45,14 @@ async def get_user(username: str) -> User:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
 
     return User(**raw_user)
+
+
+async def create_user(user: UserCreate):
+    # FIXME see why we cannot use dependencies
+    database: Database = get_database()
+    hashed_password = encrypt_password(user.password)
+    user_db = {"username": user.username, "password": hashed_password, "admin": user.admin}
+    insert_query = users.insert().values(user_db)
+    user_id = await database.execute(insert_query)
+    logging.debug(f'New user created -> id={user_id}')
+    return user_id

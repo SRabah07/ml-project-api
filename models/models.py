@@ -1,11 +1,8 @@
 from pydantic import BaseModel
 
 
-class UserBase(BaseModel):
+class UserCreate(BaseModel):
     username: str
-
-
-class UserCreate(UserBase):
     password: str
     admin: bool = False
 
