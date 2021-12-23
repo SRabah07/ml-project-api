@@ -19,7 +19,7 @@ schema \
 
 
 @router.post('/')
-def register(user: UserCreate):
+async def register(user: UserCreate):
     validate(user)
 
 

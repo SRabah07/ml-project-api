@@ -1,1 +1,1 @@
-from auth.auth import *
+from auth import auth, password

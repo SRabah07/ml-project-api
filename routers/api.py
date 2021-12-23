@@ -4,5 +4,5 @@ router = APIRouter()
 
 
 @router.get("/permissions")
-async def home():
+async def permissions():
     return ["V1", "V2"]

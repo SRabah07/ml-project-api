@@ -7,11 +7,8 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    admin: bool = False
 
 
-class User(UserBase):
+class User(UserCreate):
     id: int
-
-
-class UserDB(User):
-    hashed_password: str
