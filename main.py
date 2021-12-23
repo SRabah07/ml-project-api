@@ -5,12 +5,13 @@ import routers
 from db.init import init
 from db.db import get_database
 from dependencies import read_current_user
-
+import os
 import logging
-logging.config.fileConfig('logging.config')
+
+LOGGING_CONFIG_FILE = os.environ.get('LOGGING_CONFIG_FILE', "logging.config")
+logging.config.fileConfig(LOGGING_CONFIG_FILE)
 
 logger = logging.getLogger(__name__)
-
 
 app = FastAPI()
 
