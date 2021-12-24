@@ -11,19 +11,22 @@ services:
       database:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/
       - LOGGING_FILE=/var/logs/ml_sentiment.log
+      - DB_TEMPLATE=postgres
+      - DATABASE_HOST=db_host
+      - DATABASE_PORT=5432
+    env_file:
+      - .db_credentials
     volumes:
       - ./api-logs/:/var/logs/
   database:
     image: "postgres:latest"
-    container_name: "postgres_db"
+    container_name: "db_host"
     user: postgres # needed otherwise postgres container will use root, # FATAL: role "root" does not exist error
     ports:
       - "5438:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - .db_credentials
     networks:
       - api-network
     volumes:

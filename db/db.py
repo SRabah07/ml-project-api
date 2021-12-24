@@ -1,8 +1,41 @@
 from databases import Database
 import sqlalchemy
 import os
+import logging
 
-DATABASE_URL = os.environ.get('DATABASE_URL', "sqlite:///local_sqlalchemy.db")
+logger = logging.getLogger(__name__)
+
+DEFAULT_DB = "sqlite:///ml_sentiment.db"
+
+DATABASE_TEMPLATE = os.environ.get('DB_TEMPLATE')
+DATABASE_HOST = os.environ.get('DATABASE_HOST')
+DATABASE_PORT = os.environ.get('DATABASE_PORT')
+
+if not DATABASE_TEMPLATE:
+    logger.warn(
+        """
+        No Database template provided. Available are: [postgres]
+        > -- Local Sqlite DB will be used. -- <
+        """
+    )
+elif not (DATABASE_HOST or DATABASE_PORT):
+    raise Exception(f"Template provide={DATABASE_TEMPLATE}. But no Database host / port found")
+
+
+def build_db_url() -> str:
+    if DATABASE_TEMPLATE and DATABASE_TEMPLATE.lower() == "postgres":
+        user = os.environ.get('POSTGRES_USER', '')
+        password = os.environ.get('POSTGRES_PASSWORD', '')
+        if not user:
+            logger.warn("No user provided for the DB.")
+        if not password:
+            logger.warn("No password provided for the DB.")
+        return f"postgresql://{user}:{password}@{DATABASE_HOST}:{DATABASE_PORT}/"
+
+    return DEFAULT_DB
+
+
+DATABASE_URL = build_db_url()
 database = Database(DATABASE_URL)
 sqlalchemy_engine = sqlalchemy.create_engine(DATABASE_URL)
 
