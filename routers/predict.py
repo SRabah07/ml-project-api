@@ -2,7 +2,6 @@ import logging
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from sklearn.feature_extraction.text import CountVectorizer
 from joblib import load
 import os
 
