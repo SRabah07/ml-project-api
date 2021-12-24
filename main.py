@@ -9,7 +9,8 @@ import os
 import logging
 
 LOGGING_CONFIG_FILE = os.environ.get('LOGGING_CONFIG_FILE', "logging.config")
-logging.config.fileConfig(LOGGING_CONFIG_FILE)
+LOGGING_FILE = os.environ.get('LOGGING_FILE', "api.log")
+logging.config.fileConfig(LOGGING_CONFIG_FILE, defaults={"logging_file_name": LOGGING_FILE})
 
 logger = logging.getLogger(__name__)
 

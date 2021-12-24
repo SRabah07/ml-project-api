@@ -1,8 +1,11 @@
+import logging
 from fastapi import APIRouter, HTTPException
 from password_validator import PasswordValidator
 from starlette.status import HTTP_400_BAD_REQUEST
 from models import UserCreate
 from db.manage_user import create_user
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -21,8 +24,10 @@ schema \
 
 @router.post('/')
 async def register(user: UserCreate):
+    logger.debug(f'Register user')
     validate(user)
     user_id = await create_user(user)
+    logger.debug(f'User with id={user_id} registered')
 
 
 def validate(user: UserCreate):

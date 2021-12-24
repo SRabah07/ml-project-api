@@ -9,6 +9,5 @@ security = HTTPBasic()
 
 
 async def read_current_user(credentials: HTTPBasicCredentials = Depends(security)):
-    logger.debug(f'Read current user: {credentials}')
     await verify(credentials.username, credentials.password)
     return credentials.username

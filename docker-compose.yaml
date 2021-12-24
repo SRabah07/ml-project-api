@@ -1,8 +1,8 @@
 version: "3.9"
 services:
   api:
-    image: "ml-sentiment-analysis:0.0.1"
-    #build: .
+    #image: "ml-sentiment-analysis:0.0.1"
+    build: .
     ports:
       - "8200:8000/tcp"
     networks:
@@ -12,9 +12,9 @@ services:
         condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/
-      - API_LOG_FILE=/storage/api-test/api_test.log
+      - LOGGING_FILE=/var/logs/ml_sentiment.log
     volumes:
-      - .:/storage/api-test
+      - ./api-logs/:/var/logs/
   database:
     image: "postgres:latest"
     container_name: "postgres_db"
