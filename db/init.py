@@ -16,4 +16,4 @@ async def init():
     logger.info('DB metadata created...')
     logger.info('Init users...')
     await init_users(database)
-    logger.info('Users inited...')
+    logger.info('Users initialized...')

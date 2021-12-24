@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 async def init_users(database: Database):
     logger.info('Create default users...')
     count_query = select([func.count()]).select_from(users)
-    logger.info(f"count_query {count_query}")
-    logger.info(f"database {type(database)}")
+    logger.debug(f"count_query {count_query}")
 
     count_tuple = await database.fetch_one(count_query)
+    logger.info(f"count_tuple {count_tuple}")
     if count_tuple[0] == 0:
         logger.info("Users table is empty. 'credentials.json' will be loaded")
         with open('resources/credentials.json') as file:
