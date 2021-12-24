@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  api:
+    #image: "api-sentiment-v2:latest"
+    build: .
+    ports:
+      - "8200:8000/tcp"
+    networks:
+      - api-network
+    depends_on:
+      - "database"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/
+      - API_LOG_FILE=/storage/api-test/api_test.log
+    volumes:
+      - .:/storage/api-test
+  sqlite:
+    image: "nouchka/sqlite3:latest"
+    container_name: "sqlite"
+    ports:
+      - "9000:9000"
+    networks:
+      - api-network
+    volumes:
+      - .:/root/db
+  database:
+    image: "postgres:latest"
+    container_name: "postgres_db"
+    ports:
+      - "5438:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - api-network
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+networks:
+  api-network:
