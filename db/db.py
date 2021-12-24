@@ -50,6 +50,18 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("admin", sqlalchemy.Boolean, nullable=False),
 )
 
+models = sqlalchemy.Table(
+    "model",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
+    sqlalchemy.Column("key", sqlalchemy.String(length=100), nullable=False),
+    sqlalchemy.Column("version", sqlalchemy.String(length=3), nullable=False),
+    sqlalchemy.Column("type", sqlalchemy.String(length=250), nullable=False),
+    sqlalchemy.Column("branch", sqlalchemy.String(length=100), nullable=False),
+    sqlalchemy.Column("description", sqlalchemy.String(length=200), nullable=False),
+    sqlalchemy.Column("score", sqlalchemy.Float(), nullable=False),
+)
+
 
 def get_database() -> Database:
     return database

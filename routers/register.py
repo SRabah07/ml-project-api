@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, HTTPException
 from password_validator import PasswordValidator
-from starlette.status import HTTP_400_BAD_REQUEST
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from models import UserCreate
 from db.manage_user import create_user
 
@@ -22,12 +22,13 @@ schema \
     .has().no().spaces()
 
 
-@router.post('/')
+@router.post('/', status_code=HTTP_201_CREATED)
 async def register(user: UserCreate):
     logger.debug(f'Register user')
     validate(user)
     user_id = await create_user(user)
     logger.debug(f'User with id={user_id} registered')
+    return user_id
 
 
 def validate(user: UserCreate):

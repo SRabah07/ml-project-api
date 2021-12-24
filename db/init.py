@@ -2,7 +2,9 @@ import logging
 from fastapi import Depends
 from db.db import get_database, metadata, sqlalchemy_engine
 from db.manage_user import init_users
+from db.manage_model import init_models
 from databases import Database
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,3 +19,7 @@ async def init():
     logger.info('Init users...')
     await init_users(database)
     logger.info('Users initialized.')
+
+    logger.info('Load ML models...')
+    await init_models(database)
+    logger.info('ML models loaded...')
