@@ -1,10 +1,11 @@
+#FROM python:3.8.11-alpine3.14
 FROM python:3.10.1-alpine3.15
 
 COPY . /app
 WORKDIR app
 
 RUN apk update --no-cache && \
-    apk add  musl-dev gcc libffi-dev postgresql-dev python3-dev add build-base && \
+    apk add musl-dev gcc libffi-dev postgresql-dev python3-dev build-base  && \
     pip install  --no-cache-dir -r requirements.txt
 
 EXPOSE 8000

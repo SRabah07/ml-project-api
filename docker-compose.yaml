@@ -1,31 +1,24 @@
 version: "3.9"
 services:
   api:
-    #image: "api-sentiment-v2:latest"
-    build: .
+    image: "ml-sentiment-analysis:0.0.1"
+    #build: .
     ports:
       - "8200:8000/tcp"
     networks:
       - api-network
     depends_on:
-      - "database"
+      database:
+        condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/
       - API_LOG_FILE=/storage/api-test/api_test.log
     volumes:
       - .:/storage/api-test
-  sqlite:
-    image: "nouchka/sqlite3:latest"
-    container_name: "sqlite"
-    ports:
-      - "9000:9000"
-    networks:
-      - api-network
-    volumes:
-      - .:/root/db
   database:
     image: "postgres:latest"
     container_name: "postgres_db"
+    user: postgres # needed otherwise postgres container will use root, # FATAL: role "root" does not exist error
     ports:
       - "5438:5432"
     environment:
@@ -35,5 +28,10 @@ services:
       - api-network
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 networks:
   api-network:
