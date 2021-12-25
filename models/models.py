@@ -24,7 +24,7 @@ class Model(BaseModel):
 
 class MakePrediction(BaseModel):
     id: Optional[int]
-    version: Optional[int]
+    version: Optional[str]
     text: str
 
 
