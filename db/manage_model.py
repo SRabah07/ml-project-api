@@ -11,19 +11,24 @@ from db.db import get_database
 from starlette.status import HTTP_404_NOT_FOUND
 from typing import List
 import csv
+import os
 
 logger = logging.getLogger(__name__)
+STORED_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "storage/models")
+MODELS_METADATA_FILE_NAME = os.environ.get('MODELS_METADATA_FILE_NAME', 'models_data.csv')
 
 
 async def init_models(database: Database):
     logger.debug('Load models...')
     count_query = select([func.count()]).select_from(models)
     logger.debug(f"count_query {count_query}")
-
     count_tuple = await database.fetch_one(count_query)
     if count_tuple[0] == 0:
-        logger.debug("Model table is empty. 'models_data.csv' will be loaded")
-        with open('resources/models_data.csv') as csvfile:
+        logger.debug(f"Stored models path: {STORED_MODELS_PATH}. Metadata file is: {MODELS_METADATA_FILE_NAME}")
+        file_path = f"{STORED_MODELS_PATH}/{MODELS_METADATA_FILE_NAME}"
+
+        logger.debug(f"Model table is empty. {file_path} will be loaded")
+        with open(file_path) as csvfile:
             csvreader = csv.DictReader(csvfile)
             for row in csvreader:
                 insert_query = models.insert().values(row)

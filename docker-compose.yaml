@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   api:
-    image: "ml-sentiment-analysis:0.0.2"
+    image: "ml-sentiment-analysis:0.0.1"
     #build: .
     ports:
       - "8200:8000/tcp"
@@ -19,6 +19,7 @@ services:
       - .db_credentials
     volumes:
       - ./volume/logs/:/var/logs/
+      - ./storage:/storage/
   database:
     image: "postgres:latest"
     container_name: "db_host"
