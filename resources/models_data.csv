@@ -1,4 +1,0 @@
-key,version,type,branch,description,score
-ebd02f0c1b555ab4eb02,V1,"LogisticRegression(solver=""newton-cg"")",All,Unique model trained on all data,0.51939
-c0cac781ede0a9144940,V2,"RandomForestClassifier(n_estimators=20, max_depth=5)",Disneyland_HongKong,Model trained on branch data of HongKong,0.46237
-e4d5fd1844fbe3ba7e3a,V3,"RandomForestClassifier(n_estimators=20, max_depth=5)",Disneyland_California,Model trained on branch data of California,0.60694
