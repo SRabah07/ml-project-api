@@ -54,12 +54,7 @@ def get_vectorizer(key):
     if not exist:
         raise Exception(f"Model for feature extraction within path={path} doesn't exist!")
 
-    try:
-        model = load(path_to_model)
-    except Exception as e:
-        logger.error(f"Error occurs when loading vectorizer model: {e}")
-        raise Exception(e)
-    return model
+    return load(path_to_model)
 
 
 def get_model(key):

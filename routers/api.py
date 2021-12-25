@@ -35,7 +35,7 @@ async def prediction(info: MakePrediction):
     model = None
     if info.version:
         model = await get_by_version(info.version)
-    elif info.id > 0:
+    elif info.id and info.id > 0:
         model = await get(info.id)
 
     if not model:
