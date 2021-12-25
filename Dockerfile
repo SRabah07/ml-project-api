@@ -1,18 +1,22 @@
 #FROM python:3.8.11-alpine3.14
-FROM python:3.10.1-alpine3.15
+#FROM python:3.10.1-alpine3.15
+#FROM python:3.8-slim-buster
+FROM debian:latest
 
 COPY . /app
 WORKDIR app
 
-RUN apk update --no-cache && \
-    apk add musl-dev gcc libffi-dev postgresql-dev python3-dev build-base  && \
-    pip install  --no-cache-dir -r requirements.txt
+#RUN apk update --no-cache && \
+#    apk add musl-dev gcc libffi-dev postgresql-dev python3-dev build-base  && \
+#    pip install  --no-cache-dir -r requirements.txt
 
+RUN apt-get update && apt-get install python3-pip -y  && \
+    pip install  --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
-#CMD ["uvicorn main:main --reload --port 8000 --host localhost"]
+#CMD ["uvicorn main:main --reload --port 8000 --host loacalhost"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-
+#ENTRYPOINT ["sh"]
 # Issue fixed as:
 # - o matching distribution found for bcrypt==3.2.0 and exception on installing `cffi`
     # => found fix at https://pkgs.alpinelinux.org/package/edge/main/x86/py3-bcrypt and https://github.com/pyca/bcrypt =>  apk add --update musl-dev gcc libffi-dev && \
