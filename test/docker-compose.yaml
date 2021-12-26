@@ -1,0 +1,67 @@
+version: "3.9"
+services:
+  api:
+    image: "ml-sentiment-analysis:0.0.1"
+    container_name: ml-sentiment-analysis-api
+    ports:
+      - "8300:8000/tcp"
+    networks:
+      - api-network
+    environment:
+      - LOGGING_FILE=/var/logs/ml_sentiment_for_api_test.log
+    volumes:
+      - ../volume/logs/:/var/logs/
+      - ../storage:/storage/
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/readiness" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  authentication-api-test:
+    #image: ""
+    build: .
+    environment:
+      - API_PROTOCOL=http
+      - API_HOST=ml-sentiment-analysis-api
+      - API_PORT=8000
+      - API_ENDPOINT_TYPE=authentication
+      - API_ENDPOINT_DESCRIPTION=Authentication
+      - API_LOG_FILE=/logs/api_test.log
+    env_file:
+      - .credentials
+    networks:
+      - api-network
+    volumes:
+      - ./logs:/logs
+    depends_on:
+      api:
+        condition: service_healthy
+  registering-api-test:
+    extends:
+      service: authentication-api-test
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      - API_ENDPOINT_TYPE=registering
+      - API_ENDPOINT_DESCRIPTION=Registering
+  models-api-test:
+    extends:
+      service: authentication-api-test
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      - API_ENDPOINT_TYPE=models
+      - API_ENDPOINT_DESCRIPTION=Modeling
+  prediction-api-test:
+    extends:
+      service: authentication-api-test
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      - API_ENDPOINT_TYPE=prediction
+      - API_ENDPOINT_DESCRIPTION=Prediction
+networks:
+  api-network:
