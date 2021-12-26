@@ -10,7 +10,7 @@ WORKDIR app
 #    apk add musl-dev gcc libffi-dev postgresql-dev python3-dev build-base  && \
 #    pip install  --no-cache-dir -r requirements.txt
 
-RUN apt-get update && apt-get install python3-pip -y  && \
+RUN apt-get update && apt-get install python3-pip curl -y  &&  \
     pip install  --no-cache-dir -r requirements.txt
 EXPOSE 8000
 

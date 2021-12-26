@@ -29,6 +29,11 @@ async def home():
     return {"message": "Project 2: ML Sentiment Analysis API"}
 
 
+@app.get("/readiness")
+async def readiness():
+    return {"status": "OK", "message": "Everything is up!"}
+
+
 @app.on_event("startup")
 async def startup():
     logger.info('Startup Application...')

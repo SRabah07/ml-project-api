@@ -14,7 +14,7 @@ import csv
 import os
 
 logger = logging.getLogger(__name__)
-STORED_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "storage/models")
+STORED_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "/storage/models")
 MODELS_METADATA_FILE_NAME = os.environ.get('MODELS_METADATA_FILE_NAME', 'models_data.csv')
 
 

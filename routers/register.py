@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+
 MIN_CHARACTERS_USERNAME = 5
 
 # Password validator
@@ -50,7 +51,7 @@ async def validate(user: UserCreate):
     # Login / Username
     if len(user.username) < MIN_CHARACTERS_USERNAME:
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST,
-                            detail="Username/Login must be at least {MIN_CHARACTERS_USERNAME} characters")
+                            detail=f"Username/Login must be at least {MIN_CHARACTERS_USERNAME} characters")
 
     # Password
     if not schema.validate(user.password):

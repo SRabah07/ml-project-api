@@ -7,3 +7,5 @@ __pycache__
 volume
 ml_models
 storage
+/*/logs
+/*/__pycache__
