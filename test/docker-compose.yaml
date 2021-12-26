@@ -21,14 +21,11 @@ services:
     #image: ""
     build: .
     environment:
-      - API_PROTOCOL=http
-      - API_HOST=ml-sentiment-analysis-api
-      - API_PORT=8000
       - API_ENDPOINT_TYPE=authentication
       - API_ENDPOINT_DESCRIPTION=Authentication
-      - API_LOG_FILE=/logs/api_test.log
     env_file:
       - .credentials
+      - .api_env
     networks:
       - api-network
     volumes:
@@ -37,31 +34,52 @@ services:
       api:
         condition: service_healthy
   registering-api-test:
-    extends:
-      service: authentication-api-test
+    #image: ""
+    build: .
     depends_on:
       api:
         condition: service_healthy
     environment:
       - API_ENDPOINT_TYPE=registering
       - API_ENDPOINT_DESCRIPTION=Registering
+    env_file:
+      - .credentials
+      - .api_env
+    networks:
+      - api-network
+    volumes:
+      - ./logs:/logs
   models-api-test:
-    extends:
-      service: authentication-api-test
+    #image: ""
+    build: .
     depends_on:
       api:
         condition: service_healthy
     environment:
       - API_ENDPOINT_TYPE=models
       - API_ENDPOINT_DESCRIPTION=Modeling
+    env_file:
+      - .credentials
+      - .api_env
+    networks:
+      - api-network
+    volumes:
+      - ./logs:/logs
   prediction-api-test:
-    extends:
-      service: authentication-api-test
+    #image: ""
+    build: .
     depends_on:
       api:
         condition: service_healthy
     environment:
       - API_ENDPOINT_TYPE=prediction
       - API_ENDPOINT_DESCRIPTION=Prediction
+    env_file:
+      - .credentials
+      - .api_env
+    networks:
+      - api-network
+    volumes:
+      - ./logs:/logs
 networks:
   api-network:

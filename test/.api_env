@@ -1,0 +1,4 @@
+API_PROTOCOL=http
+API_HOST=ml-sentiment-analysis-api
+API_PORT=8000
+API_LOG_FILE=/logs/api_test.log

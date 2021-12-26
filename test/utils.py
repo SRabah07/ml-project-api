@@ -63,7 +63,7 @@ class APIHelper:
             auth = HTTPBasicAuth(credentials[0], credentials[1])
 
         url = f"{self.url}/{endpoint}"
-
+        logging.info(f"Request URL: {url}, Method: {method}, Params: {params}, Body: {body}")
         if method == "GET":
             req = requests.get(url, params=params, auth=auth)
         elif method in ["POST", "PUT"] and body:
