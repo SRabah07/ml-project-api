@@ -1,4 +1,2 @@
-venv
-storage
-*.db
-volume
+logs
+*.log
