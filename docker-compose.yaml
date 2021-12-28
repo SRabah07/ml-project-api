@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   api:
-    image: "ml-sentiment-analysis:0.0.1"
+    image: "rsalim1/ml-sentiment-analysis:0.0.1"
     #build: .
     ports:
       - "8200:8000/tcp"

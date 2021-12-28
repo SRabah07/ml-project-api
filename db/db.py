@@ -36,6 +36,7 @@ def build_db_url() -> str:
 
 
 DATABASE_URL = build_db_url()
+logger.info(f"Database URL: {DATABASE_URL}")
 database = Database(DATABASE_URL)
 sqlalchemy_engine = sqlalchemy.create_engine(DATABASE_URL)
 
