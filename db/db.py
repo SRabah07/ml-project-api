@@ -11,6 +11,13 @@ DATABASE_TEMPLATE = os.environ.get('DB_TEMPLATE')
 DATABASE_HOST = os.environ.get('DATABASE_HOST')
 DATABASE_PORT = os.environ.get('DATABASE_PORT')
 
+logger.debug(
+    f"DATABASE_TEMPLATE={DATABASE_TEMPLATE}"
+    f"DATABASE_HOST={DATABASE_HOST}, DATABASE_PORT={DATABASE_PORT}, PASSWORD={os.environ.get('POSTGRES_USER', '')}, "
+    f"LOGIN={os.environ.get('POSTGRES_PASSWORD', '')} ")
+
+
+
 if not DATABASE_TEMPLATE:
     logger.warn(
         """
@@ -30,7 +37,10 @@ def build_db_url() -> str:
             logger.warn("No user provided for the DB.")
         if not password:
             logger.warn("No password provided for the DB.")
-        return f"postgresql://{user}:{password}@{DATABASE_HOST}:{DATABASE_PORT}/"
+
+        url = f"postgresql://{user}:{password}@{DATABASE_HOST}:{DATABASE_PORT}/"
+        logger.warn(f"URL is: {url}")
+        return url
 
     return DEFAULT_DB
 

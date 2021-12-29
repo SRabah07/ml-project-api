@@ -5,6 +5,18 @@ metadata:
   name: ml-sentiment-config-map
 data:
   LOGGING_FILE: "/var/logs/ml_sentiment.log"
+  DB_TEMPLATE: "postgres"
+  DATABASE_HOST: "ml-sentiment-db-service"
+  DATABASE_PORT: "5438"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ml-sentiment-secret
+data:
+  POSTGRES_USER: "cG9zdGdyZXM="
+  POSTGRES_PASSWORD: "YVFXU3J0eTgwMg=="
+---
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +36,7 @@ spec:
         - name: pv-storage
       containers:
         - name: api
-          image: ml-sentiment-analysis:0.0.1
+          image: ml-sentiment-analysis:0.0.4
           resources:
             limits:
               memory: "128Mi"
@@ -37,6 +49,52 @@ spec:
           envFrom:
             - configMapRef:
                 name: ml-sentiment-config-map
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml-sentiment-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml-sentiment-secret
+                  key: POSTGRES_PASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-sentiment-db-deployment
+spec:
+  selector:
+    matchLabels:
+      app: ml-sentiment-db
+  template:
+    metadata:
+      labels:
+        app: ml-sentiment-db
+    spec:
+      volumes:
+        - name: pv-storage
+      containers:
+        - name: db
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: pv-storage
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ml-sentiment-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ml-sentiment-secret
+                  key: POSTGRES_PASSWORD
 ---
 apiVersion: v1
 kind: Service
@@ -51,6 +109,20 @@ spec:
   ports:
   - port: 9400
     targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-sentiment-db-service
+  labels:
+    app: my-sentiment-db-service
+spec:
+  type: ClusterIP
+  selector:
+    app: ml-sentiment-db
+  ports:
+  - port: 5438
+    targetPort: 5432
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
