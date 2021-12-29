@@ -5,7 +5,7 @@ metadata:
   name: ml-sentiment-config-map
 data:
   LOGGING_FILE: "/var/logs/ml_sentiment.log"
-  DB_TEMPLATE: "postgres"
+  #DB_TEMPLATE: "postgres"
   DATABASE_HOST: "ml-sentiment-db-service"
   DATABASE_PORT: "5438"
 ---
@@ -22,7 +22,7 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: ./storage
+    path: ./storage/models
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -76,7 +76,7 @@ kind: Deployment
 metadata:
   name: ml-sentiment-api-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: ml-sentiment-api
@@ -104,7 +104,7 @@ spec:
           volumeMounts:
             - mountPath: /var/logs/
               name: pv-logs
-            - mountPath: /storage/
+            - mountPath: /storage/models/
               name: pv-storage
           envFrom:
             - configMapRef:
