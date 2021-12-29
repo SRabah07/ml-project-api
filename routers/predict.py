@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 nltk.download('stopwords')
 nltk.download('punkt')
-STORED_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "/storage/models")
+STORED_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "./storage/models")
 
 
 def make_predict(key: str, text: str):

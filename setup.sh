@@ -10,7 +10,7 @@ echo "Created resources: "
 kubectl get all --namespace=ml-sentiment-namespace
 
 echo "Ingress is: "
-kubectl get ingress --namespace=ml-sentiment-namespace
+kubectl get ingress
 
 echo "Waiting resources up..."
 sleep 35
