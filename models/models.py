@@ -17,6 +17,7 @@ class Model(BaseModel):
     key: str
     version: str
     type: str
+    model: str
     branch: str
     description: str
     score: float
@@ -28,6 +29,28 @@ class MakePrediction(BaseModel):
     text: str
 
 
-class PredictionResult(BaseModel):
+class SentimentPredictionResult(BaseModel):
     model: Model
     rating: int
+
+
+class StrokeObservation(BaseModel):
+    gender: str
+    age: float
+    hypertension: str
+    heart_disease: str
+    Residence_type: str
+    avg_glucose_level: float
+    bmi: Optional[float] = None
+    smoking_status: str
+
+
+class StrokePredictionRequest(BaseModel):
+    observation: StrokeObservation
+    id: Optional[int]
+    version: Optional[str]
+
+
+class StrokePredictionResult(BaseModel):
+    observation: StrokeObservation
+    prediction: str

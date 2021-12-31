@@ -1,8 +1,8 @@
 version: "3.9"
 services:
   api:
-    image: "ml-sentiment-analysis:0.0.1"
-    container_name: ml-sentiment-analysis-api
+    image: "ml-project-api:0.0.1"
+    container_name: ml-project-api
     ports:
       - "8300:8000/tcp"
     networks:
@@ -18,8 +18,7 @@ services:
       timeout: 5s
       retries: 5
   authentication-api-test:
-    #image: ""
-    build: .
+    image: "ml-project-api-test:0.0.1"
     environment:
       - API_ENDPOINT_TYPE=authentication
       - API_ENDPOINT_DESCRIPTION=Authentication
@@ -34,8 +33,7 @@ services:
       api:
         condition: service_healthy
   registering-api-test:
-    #image: ""
-    build: .
+    image: "ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
@@ -50,8 +48,7 @@ services:
     volumes:
       - ./logs:/logs
   models-api-test:
-    #image: ""
-    build: .
+    image: "ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
@@ -65,15 +62,29 @@ services:
       - api-network
     volumes:
       - ./logs:/logs
-  prediction-api-test:
-    #image: ""
-    build: .
+  sentiment-prediction-api-test:
+    image: "ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
     environment:
-      - API_ENDPOINT_TYPE=prediction
-      - API_ENDPOINT_DESCRIPTION=Prediction
+      - API_ENDPOINT_TYPE=sentiment-prediction
+      - API_ENDPOINT_DESCRIPTION=Sentiment Prediction
+    env_file:
+      - .credentials
+      - .api_env
+    networks:
+      - api-network
+    volumes:
+      - ./logs:/logs
+  stroke-prediction-api-test:
+    image: "ml-project-api-test:0.0.1"
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      - API_ENDPOINT_TYPE=stroke-prediction
+      - API_ENDPOINT_DESCRIPTION=Stroke Prediction
     env_file:
       - .credentials
       - .api_env

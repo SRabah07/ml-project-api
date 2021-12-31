@@ -7,7 +7,9 @@ REGISTERING_ENDPOINT = "register"
 
 MODELS_ENDPOINT = "api/models"
 
-PREDICTION_ENDPOINT = "api/predict"
+PREDICTION_ENDPOINT_SENTIMENT = "api/predict/sentiment"
+
+PREDICTION_ENDPOINT_STROKE = "api/predict/stroke"
 
 
 #######################
@@ -121,9 +123,9 @@ def test_models(helper: APIHelper, credentials):
     should_get_model(helper, "V3", credentials_)
 
 
-#######################
-#  Prediction         #
-######################
+################################
+#  Prediction Sentiment        #
+###############################
 
 def should_predict_rating(helper: APIHelper, model_version, credentials, text, expected_rating):
     data = {
@@ -132,14 +134,15 @@ def should_predict_rating(helper: APIHelper, model_version, credentials, text, e
     }
 
     data = json.dumps(data)
-    result = helper.makeRequest(endpoint=PREDICTION_ENDPOINT, method="PUT", credentials=credentials, body=data)
+    result = helper.makeRequest(endpoint=PREDICTION_ENDPOINT_SENTIMENT, method="PUT", credentials=credentials,
+                                body=data)
     assert result['status'] == 200, 'Should predicate'
     content = json.loads(result['content'])
     rating = content['rating']
     assert rating == expected_rating, f'Expect rating {expected_rating}, but found {rating}'
 
 
-def test_prediction(helper: APIHelper, credentials):
+def test_sentiment_prediction(helper: APIHelper, credentials):
     credentials_ = (credentials["access_key"], credentials["secret_access_key"])
 
     text = "It was amazing place with many things to do"
@@ -151,3 +154,38 @@ def test_prediction(helper: APIHelper, credentials):
     should_predict_rating(helper, "V1", credentials_, text, 1)
     should_predict_rating(helper, "V2", credentials_, text, 1)
     should_predict_rating(helper, "V3", credentials_, text, 1)
+
+
+################################
+#  Prediction Stroke          #
+###############################
+def should_predict_stroke(helper: APIHelper, data, credentials, model_id, expected_stroke):
+    data = json.dumps(data)
+    result = helper.makeRequest(endpoint=PREDICTION_ENDPOINT_STROKE, method="PUT", credentials=credentials,
+                                body=data)
+    assert result['status'] == 200, 'Should predicate'
+    content = json.loads(result['content'])
+    prediction = content['prediction']
+    assert prediction == expected_stroke, f'Expect Stroke {expected_stroke}, but found {prediction}. For Model {model_id}'
+
+
+def test_stroke_prediction(helper: APIHelper, credentials):
+    credentials_ = (credentials["access_key"], credentials["secret_access_key"])
+    prediction_request = {
+        "observation": {
+            "gender": "Male",
+            "age": 67.0,
+            "hypertension": "0",
+            "heart_disease": "0",
+            "Residence_type": "Urban",
+            "avg_glucose_level": 228.69,
+            "bmi": 36.6,
+            "smoking_status": "smokes"
+        },
+        "id": -1
+    }
+    # FIXME To improve by doing stuff dynamically from type: Stroke and Version
+    for model_id in [4, 5, 6]:
+        prediction_request["id"] = model_id
+        should_predict_stroke(helper, data=prediction_request, credentials=credentials_, model_id=model_id,
+                              expected_stroke="Stroke Attack: YES")

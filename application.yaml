@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: ml-application-config-map
 data:
-  LOGGING_FILE: "/var/logs/ml_sentiment.log"
+  LOGGING_FILE: "/var/logs/ml_project.log"
   DB_TEMPLATE: "postgres"
   DATABASE_HOST: "ml-application-db-service"
   DATABASE_PORT: "5438"
@@ -36,7 +36,7 @@ spec:
         - name: pv-storage
       containers:
         - name: api
-          image: ml-sentiment-analysis:0.0.4
+          image: ml-project-api:0.0.1
           resources:
             limits:
               memory: "128Mi"

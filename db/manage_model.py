@@ -64,6 +64,18 @@ async def get_by_version(version: str) -> Model:
     return Model(**raw_model)
 
 
+async def get_by_type_and_version(type: str, version: str) -> Model:
+    database = get_database()
+    select_query = models.select().where((models.c.version == version) & (models.c.type == type))
+    logger.debug(f'Get model query by type and version={select_query}')
+    raw_model = await database.fetch_one(select_query)
+
+    if raw_model is None:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND)
+
+    return Model(**raw_model)
+
+
 async def get_all() -> List[Model]:
     database = get_database()
     select_query = models.select()

@@ -2,7 +2,7 @@ from utils import APIHelper
 from fastapi import HTTPException
 import os
 import logging
-from api_test import test_authentication, test_registering, test_models, test_prediction
+from api_test import test_authentication, test_registering, test_models, test_sentiment_prediction, test_stroke_prediction
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -67,9 +67,12 @@ def main():
     elif api_type == "models":
         logging.info("Testing Models...")
         test_models(helper, credentials)
-    elif api_type == "prediction":
-        logging.info("Testing Predictions...")
-        test_prediction(helper, credentials)
+    elif api_type == "sentiment-prediction":
+        logging.info("Testing Sentiment Predictions...")
+        test_sentiment_prediction(helper, credentials)
+    elif api_type == "stroke-prediction":
+        logging.info("Testing Stroke Predictions...")
+        test_stroke_prediction(helper, credentials)
     else:
         raise Exception(f"Type {api_type} is not handled!")
 

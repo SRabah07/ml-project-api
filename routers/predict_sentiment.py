@@ -9,7 +9,9 @@ logger = logging.getLogger(__name__)
 
 nltk.download('stopwords')
 nltk.download('punkt')
-STORED_SENTIMENT_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "./storage/sentiment/models")
+STORED_SENTIMENT_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "./storage/models/sentiment")
+
+STORED_STROKE_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "./storage/models/stroke")
 
 
 def make_sentiment_prediction(key: str, text: str):

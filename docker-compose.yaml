@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   api:
-    image: "rsalim1/ml-sentiment-analysis:0.0.1"
+    image: "ml-project-api:0.0.1"
     #build: .
     ports:
       - "8200:8000/tcp"
@@ -11,7 +11,7 @@ services:
       database:
         condition: service_healthy
     environment:
-      - LOGGING_FILE=/var/logs/ml_sentiment.log
+      - LOGGING_FILE=/var/logs/ml_project_ap.log
       - DB_TEMPLATE=postgres
       - DATABASE_HOST=db_host
       - DATABASE_PORT=5432
