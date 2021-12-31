@@ -2,17 +2,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ml-sentiment-config-map
+  name: ml-application-config-map
 data:
   LOGGING_FILE: "/var/logs/ml_sentiment.log"
   DB_TEMPLATE: "postgres"
-  DATABASE_HOST: "ml-sentiment-db-service"
+  DATABASE_HOST: "ml-application-db-service"
   DATABASE_PORT: "5438"
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: ml-sentiment-secret
+  name: ml-application-secret
 data:
   POSTGRES_USER: "cG9zdGdyZXM="
   POSTGRES_PASSWORD: "YVFXU3J0eTgwMg=="
@@ -21,16 +21,16 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ml-sentiment-api-deployment
+  name: ml-application-api-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: ml-sentiment-api
+      app: ml-application-api
   template:
     metadata:
       labels:
-        app: ml-sentiment-api
+        app: ml-application-api
     spec:
       volumes:
         - name: pv-storage
@@ -40,7 +40,7 @@ spec:
           resources:
             limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "128m"
           ports:
             - containerPort: 8000
           volumeMounts:
@@ -48,37 +48,41 @@ spec:
               name: pv-storage
           envFrom:
             - configMapRef:
-                name: ml-sentiment-config-map
+                name: ml-application-config-map
           env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: ml-sentiment-secret
+                  name: ml-application-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: ml-sentiment-secret
+                  name: ml-application-secret
                   key: POSTGRES_PASSWORD
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ml-sentiment-db-deployment
+  name: ml-application-db-deployment
 spec:
   selector:
     matchLabels:
-      app: ml-sentiment-db
+      app: ml-application-db
   template:
     metadata:
       labels:
-        app: ml-sentiment-db
+        app: ml-application-db
     spec:
       volumes:
         - name: pv-storage
       containers:
         - name: db
           image: postgres:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "128m"
           ports:
             - containerPort: 5432
           volumeMounts:
@@ -88,24 +92,24 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: ml-sentiment-secret
+                  name: ml-application-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: ml-sentiment-secret
+                  name: ml-application-secret
                   key: POSTGRES_PASSWORD
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ml-sentiment-api-service
+  name: ml-application-api-service
   labels:
-    app: ml-sentiment-api-service
+    app: ml-application-api-service
 spec:
   type: ClusterIP
   selector:
-    app: ml-sentiment-api
+    app: ml-application-api
   ports:
   - port: 9400
     targetPort: 8000
@@ -113,13 +117,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ml-sentiment-db-service
+  name: ml-application-db-service
   labels:
     app: my-sentiment-db-service
 spec:
   type: ClusterIP
   selector:
-    app: ml-sentiment-db
+    app: ml-application-db
   ports:
   - port: 5438
     targetPort: 5432
@@ -127,11 +131,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ml-sentiment-ingress
+  name: ml-application-ingress
 spec:
   ingressClassName: nginx
   defaultBackend:
     service:
-      name: ml-sentiment-api-service
+      name: ml-application-api-service
       port:
         number: 9400
