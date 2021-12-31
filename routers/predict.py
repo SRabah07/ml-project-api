@@ -9,10 +9,10 @@ logger = logging.getLogger(__name__)
 
 nltk.download('stopwords')
 nltk.download('punkt')
-STORED_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "./storage/models")
+STORED_SENTIMENT_MODELS_PATH = os.environ.get('STORED_MODELS_PATH', "./storage/sentiment/models")
 
 
-def make_predict(key: str, text: str):
+def make_sentiment_prediction(key: str, text: str):
     logger.debug(f"Predict text: {text}, using model within key: {key}")
     if not text:
         raise Exception(f"Text is required!")
@@ -49,7 +49,7 @@ def preprocess_text(text):
 
 
 def get_vectorizer(key):
-    path_to_model = f"{STORED_MODELS_PATH}/{key}.pkl"
+    path_to_model = f"{STORED_SENTIMENT_MODELS_PATH}/{key}.pkl"
     logger.debug(f"Load vectorizer from path:{path_to_model}")
     exist = os.path.exists(path_to_model)
     if not exist:
@@ -59,7 +59,7 @@ def get_vectorizer(key):
 
 
 def get_model(key):
-    path_to_model = f"{STORED_MODELS_PATH}/{key}.joblib"
+    path_to_model = f"{STORED_SENTIMENT_MODELS_PATH}/{key}.joblib"
     logger.debug(f"Load model from path:{path_to_model}")
     exist = os.path.exists(path_to_model)
     if not exist:

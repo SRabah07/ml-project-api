@@ -4,7 +4,7 @@ from password_validator import PasswordValidator
 from starlette.status import HTTP_400_BAD_REQUEST
 from models import MakePrediction, PredictionResult
 from db.manage_model import get, get_all, get_by_version
-from routers.predict import make_predict
+from routers.predict import make_sentiment_prediction
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +29,9 @@ async def get_one_by_version(version: str):
     return await get_by_version(version)
 
 
-@router.put('/predict')
+@router.put('sentiment/predict')
 async def prediction(info: MakePrediction):
-    logger.info(f"Make prediction for {info}")
+    logger.info(f"Make prediction type of sentiment, for data= {info}")
     model = None
     if info.version:
         model = await get_by_version(info.version)
@@ -42,5 +42,5 @@ async def prediction(info: MakePrediction):
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST,
                             detail="No model selected, a version's or identifier's model must be provided")
 
-    rating = make_predict(model.key, info.text)
+    rating = make_sentiment_prediction(model.key, info.text)
     return PredictionResult(model=model, rating=rating)
