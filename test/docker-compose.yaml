@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   api:
-    image: "ml-project-api:0.0.1"
+    image: "rsalim1/ml-project-api:0.0.1"
     container_name: ml-project-api
     ports:
       - "8300:8000/tcp"
@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
   authentication-api-test:
-    image: "ml-project-api-test:0.0.1"
+    image: "rsalim1/ml-project-api-test:0.0.1"
     environment:
       - API_ENDPOINT_TYPE=authentication
       - API_ENDPOINT_DESCRIPTION=Authentication
@@ -33,7 +33,7 @@ services:
       api:
         condition: service_healthy
   registering-api-test:
-    image: "ml-project-api-test:0.0.1"
+    image: "rsalim1/ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
@@ -48,7 +48,7 @@ services:
     volumes:
       - ./logs:/logs
   models-api-test:
-    image: "ml-project-api-test:0.0.1"
+    image: "rsalim1/ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
@@ -63,7 +63,7 @@ services:
     volumes:
       - ./logs:/logs
   sentiment-prediction-api-test:
-    image: "ml-project-api-test:0.0.1"
+    image: "rsalim1/ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
@@ -78,7 +78,7 @@ services:
     volumes:
       - ./logs:/logs
   stroke-prediction-api-test:
-    image: "ml-project-api-test:0.0.1"
+    image: "rsalim1/ml-project-api-test:0.0.1"
     depends_on:
       api:
         condition: service_healthy
