@@ -36,7 +36,7 @@ spec:
         - name: pv-storage
       containers:
         - name: api
-          image: ml-project-api:0.0.1
+          image: rsalim1/ml-project-api:0.0.1
           resources:
             limits:
               memory: "128Mi"
