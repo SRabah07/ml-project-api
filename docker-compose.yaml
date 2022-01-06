@@ -23,7 +23,7 @@ services:
   database:
     image: "postgres:latest"
     container_name: "db_host"
-    user: postgres # needed otherwise postgres container will use root, # FATAL: role "root" does not exist error
+    #user: postgres # needed otherwise postgres container will use root, # FATAL: role "root" does not exist error
     ports:
       - "5438:5432"
     env_file:
