@@ -8,6 +8,8 @@ data:
   DB_TEMPLATE: "postgres"
   DATABASE_HOST: "ml-application-db-service"
   DATABASE_PORT: "5438"
+  STORED_MODELS_PATH: "/storage/models"
+  PGDATA: "/var/lib/postgresql/data/pgdata"
 ---
 apiVersion: v1
 kind: Secret
@@ -17,6 +19,32 @@ data:
   POSTGRES_USER: "cG9zdGdyZXM="
   POSTGRES_PASSWORD: "YVFXU3J0eTgwMg=="
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ml-project-pv-storage
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/storage/models"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ml-project-pvc-storage
+spec:
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 400Mi
+  accessModes:
+    - ReadWriteMany
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,10 +61,12 @@ spec:
         app: ml-application-api
     spec:
       volumes:
-        - name: pv-storage
+      - name: pv-storage
+        persistentVolumeClaim:
+          claimName: ml-project-pvc-storage
       containers:
         - name: api
-          image: rsalim1/ml-project-api:0.0.1
+          image: rsalim1/ml-project-api:0.0.6
           resources:
             limits:
               memory: "128Mi"
@@ -44,8 +74,10 @@ spec:
           ports:
             - containerPort: 8000
           volumeMounts:
-            - mountPath: "/var/logs/"
-              name: pv-storage
+          - mountPath: "/var/logs/"
+            name: pv-storage
+          - mountPath: "/storage/models/"
+            name: pv-storage
           envFrom:
             - configMapRef:
                 name: ml-application-config-map
@@ -75,7 +107,9 @@ spec:
         app: ml-application-db
     spec:
       volumes:
-        - name: pv-storage
+      - name: pv-storage
+       #persistentVolumeClaim:
+          #claimName: ml-project-pvc-storage
       containers:
         - name: db
           image: postgres:latest
@@ -86,8 +120,9 @@ spec:
           ports:
             - containerPort: 5432
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: pv-storage
+          - mountPath: /var/lib/postgresql/data/pgdata
+           #subPath: pgdata
+            name: pv-storage
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -99,6 +134,11 @@ spec:
                 secretKeyRef:
                   name: ml-application-secret
                   key: POSTGRES_PASSWORD
+            - name: PGDATA
+              valueFrom:
+                configMapKeyRef:
+                  name: ml-application-config-map
+                  key: PGDATA
 ---
 apiVersion: v1
 kind: Service

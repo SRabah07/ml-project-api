@@ -1,4 +1,5 @@
 venv
+storage
 *.db
 volume
 volumes
