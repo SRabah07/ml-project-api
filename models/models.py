@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 
 class UserCreate(BaseModel):
@@ -12,6 +12,14 @@ class User(UserCreate):
     id: int
 
 
+class Metrics(BaseModel):
+    accuracy: Optional[float] = None,
+    recall: Optional[float] = None,
+    precision: Optional[float] = None,
+    f1: Optional[float] = None,
+    fbeta: Optional[float] = None,
+
+
 class Model(BaseModel):
     id: int
     key: str
@@ -20,8 +28,7 @@ class Model(BaseModel):
     model: str
     branch: str
     description: str
-    score: float
-
+    metrics: Any
 
 class MakePrediction(BaseModel):
     id: Optional[int]

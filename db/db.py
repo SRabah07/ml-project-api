@@ -71,7 +71,7 @@ models = sqlalchemy.Table(
     sqlalchemy.Column("model", sqlalchemy.String(length=150), nullable=False),
     sqlalchemy.Column("branch", sqlalchemy.String(length=100), nullable=False),
     sqlalchemy.Column("description", sqlalchemy.String(length=250), nullable=False),
-    sqlalchemy.Column("score", sqlalchemy.Numeric(), nullable=False),
+    sqlalchemy.Column("metrics", sqlalchemy.String(length=1000), nullable=False),
 )
 
 
